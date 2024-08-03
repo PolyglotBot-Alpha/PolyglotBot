@@ -8,8 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -21,8 +22,13 @@ public class UserService {
         return ResponseEntity.ok(userRepository.save(user));
     }
 
-    public User getUserById(String id) {
-        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+    public Optional<User> getUserById(String id) {
+        return Optional.ofNullable(userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found")));
+    }
+
+    public void updateUser(User user) {
+        user.setUpdateAt(new Timestamp(System.currentTimeMillis()));
+        userRepository.save(user);
     }
 
     public ResponseEntity<?> updateSubscriptionStatus(String userId, SubscriptionType type) {
