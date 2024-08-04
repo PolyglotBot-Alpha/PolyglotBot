@@ -14,9 +14,10 @@ public class SubscriptionService {
     @Autowired
     private SubscriptionRepository subscriptionRepository;
 
+    private StripeClient stripeClient;
+
     @KafkaListener(topics = "subscription_topic", groupId = "subscription_group")
     public void handleSubscription(String message) {
-        // 解析消息内容
         String[] parts = message.split(":");
         String userId = parts[0];
         SubscriptionType subscriptionType = SubscriptionType.valueOf(parts[1]);
