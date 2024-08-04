@@ -53,7 +53,7 @@ public class UserService {
     }
 
     @Transactional
-    public ResponseEntity<?> updateSubscriptionStatus(String userId, SubscriptionType type) {
+    public ResponseEntity<?> updateSubscriptionStatus(String userId, SubscriptionType type, String token) {
         User user = userRepository.findByIdForUpdate(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -66,7 +66,7 @@ public class UserService {
         userRepository.save(user);
 
         // Send message to Subscription-service via Kafka
-        String message = createMessage(userId, type);
+        String message = createMessage(userId, type, token);
         kafkaTemplate.send("subscription_topic", message);
 
         return ResponseEntity.ok(user);
@@ -89,7 +89,7 @@ public class UserService {
         }
     }
 
-    private String createMessage(String userId, SubscriptionType subscriptionType) {
-        return userId + ":" + subscriptionType.name();
+    private String createMessage(String userId, SubscriptionType subscriptionType, String token) {
+        return userId + ":" + subscriptionType.name() + ":" + token;
     }
 }

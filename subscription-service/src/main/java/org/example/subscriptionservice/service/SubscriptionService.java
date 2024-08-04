@@ -21,8 +21,11 @@ public class SubscriptionService {
         String[] parts = message.split(":");
         String userId = parts[0];
         SubscriptionType subscriptionType = SubscriptionType.valueOf(parts[1]);
+        String token = parts[2];
 
         updateSubscriptionRecord(userId, subscriptionType, PaymentStatus.SUCCESSFUL);
+
+        // Payment logic 
     }
 
     private void updateSubscriptionRecord(String userId, SubscriptionType subscriptionType, PaymentStatus paymentStatus) {

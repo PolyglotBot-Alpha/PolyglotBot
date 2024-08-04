@@ -6,4 +6,5 @@ import lombok.Data;
 public class SubscriptionRequest {
     private String userId;
     private SubscriptionType subscriptionType;
+    private String token;
 }

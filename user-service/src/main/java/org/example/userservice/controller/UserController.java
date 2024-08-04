@@ -54,7 +54,7 @@ public class UserController {
 
     @PostMapping("/subscribe")
     public ResponseEntity<String> subscribe(@RequestBody SubscriptionRequest request) {
-        userService.updateSubscriptionStatus(request.getUserId(), request.getSubscriptionType());
+        userService.updateSubscriptionStatus(request.getUserId(), request.getSubscriptionType(), request.getToken());
         return ResponseEntity.ok("Subscription request sent");
     }
 }
