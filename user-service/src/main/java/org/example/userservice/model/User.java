@@ -15,8 +15,8 @@ public class User {
     @Column(unique = false, nullable = false)
     private String username;
 
-    @Column(unique = false, nullable = true)
     private String email;
+    private String profileURL;
 
     @Column(nullable = false)
     private Timestamp createdAt;

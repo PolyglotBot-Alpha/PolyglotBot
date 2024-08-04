@@ -25,7 +25,7 @@ public class SubscriptionService {
 
         updateSubscriptionRecord(userId, subscriptionType, PaymentStatus.SUCCESSFUL);
 
-        // Payment logic 
+        // Payment logic
     }
 
     private void updateSubscriptionRecord(String userId, SubscriptionType subscriptionType, PaymentStatus paymentStatus) {
