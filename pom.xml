@@ -13,6 +13,7 @@
         <module>recommendation-service</module>
         <module>subscription-service</module>
         <module>user-service</module>
+        <module>chat-service</module>
     </modules>
 
     <dependencyManagement>
