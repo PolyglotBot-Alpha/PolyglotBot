@@ -40,7 +40,7 @@ public class GatewayApplication {
     @Bean
     public CorsWebFilter corsWebFilter() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.addAllowedOrigin("*"); // Allow all origins
+        corsConfiguration.addAllowedOrigin("http://localhost:3000"); // Allow all origins
         corsConfiguration.addAllowedMethod("*"); // Allow all HTTP methods
         corsConfiguration.addAllowedHeader("*"); // Allow all headers
         corsConfiguration.setAllowCredentials(true); // Allow credentials

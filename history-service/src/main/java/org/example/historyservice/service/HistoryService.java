@@ -15,7 +15,6 @@ public class HistoryService {
 
     @KafkaListener(topics = "chat-messages", groupId = "chat-group")
     public void listen(ChatMessage message) {
-        System.out.println("Message"+message.getUserId());
         chatMessageRepository.save(message);
     }
 

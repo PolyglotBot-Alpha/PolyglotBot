@@ -13,8 +13,10 @@ import org.springframework.web.client.RestTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDateTime;
+
 @RestController
-@RequestMapping("/chat")
+@RequestMapping("/api")
 public class ChatController {
     private static final Logger logger = LoggerFactory.getLogger(ChatController.class);
 
@@ -49,7 +51,8 @@ public class ChatController {
         }
 
         // Create ChatMessage object to send to Kafka
-        ChatMessage chatMessage = new ChatMessage(userInput.getUserId(), userInput.getPrompt(), response.getChoices().get(0).getMessage().getContent());
+        ChatMessage chatMessage = new ChatMessage(userInput.getUserId(), userInput.getPrompt(), response.getChoices().get(0).getMessage().getContent(),
+                LocalDateTime.now());
 
         // Send to Kafka
         kafkaTemplate.send("chat-messages", chatMessage);
