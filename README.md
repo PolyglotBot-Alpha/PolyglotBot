@@ -77,8 +77,60 @@ All services are connected through a Docker network named `backend`. This networ
 1. **Install Docker and Docker Compose:**
    Ensure that you have Docker and Docker Compose installed on your machine.
 
-2. **Build and Start the Services:**
+2. Import OpenAI API key to to env variables. 
+3. **Build and Start the Services:**
    Navigate to the directory containing the `docker-compose.yml` file and run the following command:
    ```sh
    docker-compose up --build
    ```
+This command will build the Docker images for the services and start them.
+
+## Access the Application
+
+Once the services are up and running, you can access the gateway at [http://localhost:8080](http://localhost:8080).
+
+## Environment Variables
+
+Each service requires certain environment variables for configuration:
+
+### Chat Service:
+- `SPRING_PROFILES_ACTIVE`: Spring profile to use.
+- `SPRING_DATASOURCE_URL`: URL to connect to PostgreSQL.
+- `SPRING_DATASOURCE_USERNAME`: Username for PostgreSQL.
+- `SPRING_DATASOURCE_PASSWORD`: Password for PostgreSQL.
+- `SPRING_KAFKA_BOOTSTRAP_SERVERS`: Kafka broker address.
+
+### Recommendation, Subscription, and User Services:
+- `SPRING_PROFILES_ACTIVE`: Spring profile to use.
+- `SPRING_DATASOURCE_URL`: URL to connect to MySQL.
+- `SPRING_DATASOURCE_USERNAME`: Username for MySQL.
+- `SPRING_DATASOURCE_PASSWORD`: Password for MySQL.
+- `SPRING_KAFKA_BOOTSTRAP_SERVERS`: Kafka broker address.
+
+### Subscription Service Only:
+- `STRIPE_API_KEY`: API key for Stripe payment processing.
+
+### Gateway:
+- `SPRING_PROFILES_ACTIVE`: Spring profile to use.
+- Service URIs to route requests.
+
+## Stopping the Application
+
+To stop the running services, press `Ctrl + C` in the terminal where the services are running or execute:
+
+```sh
+docker-compose down
+```
+
+## Cleaning Up
+
+If you wish to remove the containers along with the volumes, use:
+
+```sh
+docker-compose down -v
+```
+
+## Troubleshooting
+```sh
+docker-compose logs <service-name>
+```
