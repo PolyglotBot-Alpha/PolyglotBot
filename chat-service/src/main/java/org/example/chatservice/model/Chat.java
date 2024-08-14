@@ -1,4 +1,4 @@
-package org.example.historyservice.model;
+package org.example.chatservice.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

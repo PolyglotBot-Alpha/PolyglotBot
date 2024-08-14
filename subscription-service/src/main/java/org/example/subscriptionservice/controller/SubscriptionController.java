@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/subscriptions")
+@RequestMapping("/api/subscription")
 public class SubscriptionController {
     @Autowired
     private SubscriptionRepository subscriptionRepository;

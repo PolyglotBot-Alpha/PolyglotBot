@@ -1,16 +1,22 @@
 # Use an official OpenJDK runtime as a parent image
-FROM openjdk:17-jdk-alpine
+FROM openjdk:17-jdk-slim
 
 LABEL authors="yuqi.guo17@gmail.com"
 
-# Set the working directory in the container
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copy the jar file to the container
-COPY target/gateway.jar /app/app.jar
+# Copy the application jar to the container
+COPY target/gateway-0.0.1-SNAPSHOT.jar /app/gateway-service.jar
 
-# Make port 8080 available to the world outside this container
+# Copy the application-docker.properties file to the container
+COPY src/main/resources/application-docker.properties /app/application-docker.properties
+
+# Expose port 8080
 EXPOSE 8080
 
-# Run the jar file
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+# Set environment variables to point to the Docker-specific properties file
+ENV SPRING_CONFIG_LOCATION=classpath:/application-docker.properties
+
+# Run the application
+ENTRYPOINT ["java", "-jar", "gateway-service.jar"]

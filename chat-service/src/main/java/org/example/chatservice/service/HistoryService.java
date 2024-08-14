@@ -1,22 +1,17 @@
-package org.example.historyservice.service;
+package org.example.chatservice.service;
 
-import org.example.historyservice.model.ChatMessage;
-import org.example.historyservice.repository.ChatMessageRepository;
+import org.example.chatservice.model.ChatMessage;
+import org.example.chatservice.repository.ChatMessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class HistoryService {
+
     @Autowired
     private ChatMessageRepository chatMessageRepository;
-
-    @KafkaListener(topics = "chat-messages", groupId = "chat-group")
-    public void listen(ChatMessage message) {
-        chatMessageRepository.save(message);
-    }
 
     public List<ChatMessage> getHistoryByUserId(String userId) {
         return chatMessageRepository.findByUserId(userId);
