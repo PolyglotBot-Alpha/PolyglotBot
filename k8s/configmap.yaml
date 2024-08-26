@@ -1,0 +1,17 @@
+# configmap.yaml
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  MYSQL_ROOT_PASSWORD: yourpassword
+  MYSQL_DATABASE: yourdatabase
+  POSTGRES_USER: yourusername
+  POSTGRES_PASSWORD: yourpassword
+  POSTGRES_DB: yourdatabase
+  SPRING_PROFILES_ACTIVE: docker
+  SPRING_DATASOURCE_USERNAME: root
+  SPRING_DATASOURCE_PASSWORD: yourpassword
+  SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+  STRIPE_API_KEY: sk_test_51PjriKP4RsTSwQynZgGX7xVoKD6QFLa9xzR0zqd3SeRadzNgNSgLtpHGUPQLr2r7zLR0pNIsHBTcGAyCviictxX900P0dUptOI

@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway
+  template:
+    metadata:
+      labels:
+        app: gateway
+    spec:
+      containers:
+        - name: gateway
+          image: your-gateway-image:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: SPRING_PROFILES_ACTIVE
+            - name: CHAT_SERVICE_URI
+              value: http://chat-service:8085
+            - name: HISTORY_SERVICE_URI
+              value: http://history-service:8084
+            - name: RECOMMENDATION_SERVICE_URI
+              value: http://recommendation-service:8083
+            - name: SUBSCRIPTION_SERVICE_URI
+              value: http://subscription-service:8082
+            - name: USER_SERVICE_URI
+              value: http://user-service:8081
