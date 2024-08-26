@@ -1,4 +1,4 @@
-version: '3'
+version: '3.8'
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
@@ -7,19 +7,35 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
     ports:
       - "2181:2181"
+    networks:
+      - backend
 
   kafka:
     image: confluentinc/cp-kafka:latest
     depends_on:
       - zookeeper
-    ports:
-      - "9092:9092"
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    ports:
+      - "9092:9092"
+    networks:
+      - backend
+
+  mysql-db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: yourpassword
+      MYSQL_DATABASE: yourdatabase
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - backend
 
   postgres-db:
     image: postgres:latest
@@ -31,18 +47,114 @@ services:
       - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
+    networks:
+      - backend
 
-  mysql-db:
-    image: mysql:latest
+  chat-service:
+    build: ./chat-service
     environment:
-      MYSQL_ROOT_PASSWORD: yourpassword
-      MYSQL_DATABASE: yourdatabase
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/yourdatabase
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: yourpassword
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    depends_on:
+      - mysql-db
+      - kafka
     ports:
-      - "3306:3306"
-    volumes:
-      - mysql-data:/var/lib/mysql
+      - "8085:8085"
+    networks:
+      - backend
+
+  history-service:
+    build: ./history-service
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/yourdatabase
+      SPRING_DATASOURCE_USERNAME: yourusername
+      SPRING_DATASOURCE_PASSWORD: yourpassword
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    depends_on:
+      - postgres-db
+      - kafka
+    ports:
+      - "8084:8084"
+    networks:
+      - backend
+
+  recommendation-service:
+    build: ./recommendation-service
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/yourdatabase
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: yourpassword
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    depends_on:
+      - mysql-db
+      - kafka
+    ports:
+      - "8083:8083"
+    networks:
+      - backend
+
+  subscription-service:
+    build: ./subscription-service
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/yourdatabase
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: yourpassword
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      STRIPE_API_KEY: sk_test_51PjriKP4RsTSwQynZgGX7xVoKD6QFLa9xzR0zqd3SeRadzNgNSgLtpHGUPQLr2r7zLR0pNIsHBTcGAyCviictxX900P0dUptOI
+    depends_on:
+      - mysql-db
+      - kafka
+    ports:
+      - "8082:8082"
+    networks:
+      - backend
+
+  user-service:
+    build: ./user-service
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/yourdatabase
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: yourpassword
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    depends_on:
+      - mysql-db
+      - kafka
+    ports:
+      - "8081:8081"
+    networks:
+      - backend
+
+  gateway:
+    build: ./gateway
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      CHAT_SERVICE_URI: http://chat-service:8085
+      HISTORY_SERVICE_URI: http://history-service:8084
+      RECOMMENDATION_SERVICE_URI: http://recommendation-service:8083
+      SUBSCRIPTION_SERVICE_URI: http://subscription-service:8082
+      USER_SERVICE_URI: http://user-service:8081
+    depends_on:
+      - chat-service
+      - history-service
+      - recommendation-service
+      - subscription-service
+      - user-service
+    ports:
+      - "8080:8080"
+    networks:
+      - backend
 
 volumes:
-  postgres-data:
   mysql-data:
+  postgres-data:
+
+networks:
+  backend:
 
