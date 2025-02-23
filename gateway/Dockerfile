@@ -18,5 +18,7 @@ EXPOSE 8080
 # Set environment variables to point to the Docker-specific properties file
 ENV SPRING_CONFIG_LOCATION=classpath:/application-docker.properties
 
+VOLUME [ "/app/gateway/credential.json" ]
+
 # Run the application
 ENTRYPOINT ["java", "-jar", "gateway-service.jar"]
